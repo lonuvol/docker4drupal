@@ -10,9 +10,8 @@ services:
       MYSQL_DATABASE: $DB_NAME
       MYSQL_USER: $DB_USER
       MYSQL_PASSWORD: $DB_PASSWORD
-#    volumes:
-#      - ./mariadb-init:/docker-entrypoint-initdb.d # Place init .sql file(s) here.
-#      - /path/to/mariadb/data/on/host:/var/lib/mysql # Use bind mount
+    volumes:
+    - mariadb:/var/lib/mysql
 
   php:
     image: wodby/drupal-php:$PHP_TAG
@@ -21,12 +20,12 @@ services:
       SSMTP_MAILHUB: mailhog:1025
 #      SSMTP_MAILHUB: opensmtpd:25
       PHP_SENDMAIL_PATH: '"/usr/bin/dos2unix -u | /usr/sbin/ssmtp -t -f"'
-#      DB_HOST: $DB_HOST
-#      DB_PORT: $DB_PORT
-#      DB_USER: $DB_USER
-#      DB_PASSWORD: $DB_PASSWORD
-#      DB_NAME: $DB_NAME
-#      DB_DRIVER: $DB_DRIVER
+      DB_HOST: $DB_HOST
+      DB_PORT: $DB_PORT
+      DB_USER: $DB_USER
+      DB_PASSWORD: $DB_PASSWORD
+      DB_NAME: $DB_NAME
+      DB_DRIVER: $DB_DRIVER
 #      DRUSH_OPTIONS_URI: "http://${PROJECT_BASE_URL}:${PROJECT_PORT}"
 #      PHP_FPM_USER: wodby
 #      PHP_FPM_GROUP: wodby
@@ -149,16 +148,16 @@ services:
 #    labels:
 #    - "traefik.http.routers.${PROJECT_NAME}_adminer.rule=Host(`adminer.${PROJECT_BASE_URL}`)"
 
-#  pma:
-#    image: phpmyadmin/phpmyadmin
-#    container_name: "${PROJECT_NAME}_pma"
-#    environment:
-#      PMA_HOST: $DB_HOST
-#      PMA_USER: $DB_USER
-#      PMA_PASSWORD: $DB_PASSWORD
-#      UPLOAD_LIMIT: 1G
-#    labels:
-#    - "traefik.http.routers.${PROJECT_NAME}_pma.rule=Host(`pma.${PROJECT_BASE_URL}`)"
+  pma:
+    image: phpmyadmin/phpmyadmin
+    container_name: "${PROJECT_NAME}_pma"
+    environment:
+      PMA_HOST: $DB_HOST
+      PMA_USER: $DB_USER
+      PMA_PASSWORD: $DB_PASSWORD
+      UPLOAD_LIMIT: 1G
+    labels:
+    - "traefik.http.routers.${PROJECT_NAME}_pma.rule=Host(`pma.${PROJECT_BASE_URL}`)"
 
 #  solr:
 #    image: wodby/solr:$SOLR_TAG
@@ -312,7 +311,8 @@ services:
 #          defaultOwner: "id:501"
 #          defaultGroup: "id:20"
 
-#volumes:
+volumes:
+  mariadb:
 ## For macOS users (Mutagen)
 #  drupal:
 ## For Xdebug profiler
